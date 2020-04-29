@@ -24,12 +24,13 @@ npm install
 ### Run
 
 ```
-nodemon server.js
+ npm run start
+
 ```
 
 Code is Running on
 
-http://localhost:3000/
+http://localhost:2000/
 
 
 ### Thanks :zap:
