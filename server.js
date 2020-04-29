@@ -19,15 +19,16 @@ var upload = multer({storage: multer.diskStorage({
     callback(null, './uploads');
   },
   filename: function (req, file, callback) 
-  { callback(null, file.fieldname +'-' + Date.now()+path.extname(file.originalname));}
+  { //callback(null, file.fieldname +'-' + Date.now()+path.extname(file.originalname))
+  callback(null, file.originalname);}
 
 }),
 
 fileFilter: function(req, file, callback) {
   var ext = path.extname(file.originalname)
-  if (ext !== '.png' && ext !== '.jpg' && ext !== '.gif' && ext !== '.jpeg') {
-    return callback(/*res.end('Only images are allowed')*/ null, false)
-  }
+  // if (ext !== '.png' && ext !== '.jpg' && ext !== '.gif' && ext !== '.jpeg') {
+  //   return callback(/*res.end('Only images are allowed')*/ null, false)
+  // }
   callback(null, true)
 }
 });
@@ -72,13 +73,23 @@ app.post('/', upload.any(), function(req,res){
       }else{
         c=1;
       }
-
+      const reqFiles = [];
+      for (var i = 5; i < req.files.length; i++) {
+        reqFiles.push( req.files[i].filename)
+      // reqFiles:req.files[3] && req.files[3].filename ? req.files[3].filename : '',
+    }
       var detail = new Detail({
 
         unique_id:c,
         Name: req.body.title,
-        image1: req.files[0] && req.files[0].filename ? req.files[0].filename : '',
-        image2: req.files[1] && req.files[1].filename ? req.files[1].filename : '',
+        Discription: req.body.dis,
+        AlbumArt: req.files[4].filename ,
+        image3: req.files[0].filename ,
+        image4: req.files[1].filename ,
+        image1: req.files[2].filename ,
+        image2:  req.files[3].filename ,
+        songs: reqFiles,
+        
       });
 
       detail.save(function(err, Person){
@@ -86,10 +97,10 @@ app.post('/', upload.any(), function(req,res){
           console.log(err);
         else
           res.redirect('/');
-
+          
       });
 
-    }).sort({_id: -1}).limit(1);
+    }).sort({_id: -1}).limit(4);
 
   }
 });
